@@ -20,9 +20,9 @@ Option Explicit
 ' Datei auf einem Datenträger bereit.
 #If VBA7 Then
     'we assume in VBA7 ansi is obsolete
-    Private Declare PtrSafe Function GetFileVersionInfoSize Lib "version" Alias "GetFileVersionInfoSizeW" (ByVal lptstrFilename As LongPtr, ByRef lpdwHandle As LongPtr) As Long
-    Private Declare PtrSafe Function GetFileVersionInfo Lib "version" Alias "GetFileVersionInfoW" (ByVal lptstrFilename As LongPtr, ByVal dwHandle As LongPtr, ByVal dwLen As Long, lpData As Any) As Long
-    Private Declare PtrSafe Function VerQueryValue Lib "version" Alias "VerQueryValueW" (pBlock As Any, ByVal lpSubBlock As LongPtr, lplpBuffer As Any, puLen As Long) As Long
+    Private Declare PtrSafe Function GetFileVersionInfoSize Lib "Version" Alias "GetFileVersionInfoSizeW" (ByVal lptstrFilename As LongPtr, ByRef lpdwHandle As LongPtr) As Long
+    Private Declare PtrSafe Function GetFileVersionInfo Lib "Version" Alias "GetFileVersionInfoW" (ByVal lptstrFilename As LongPtr, ByVal dwHandle As LongPtr, ByVal dwLen As Long, lpData As Any) As Long
+    Private Declare PtrSafe Function VerQueryValue Lib "Version" Alias "VerQueryValueW" (pBlock As Any, ByVal lpSubBlock As LongPtr, lplpBuffer As Any, puLen As Long) As Long
     Private Declare PtrSafe Function VerLanguageName Lib "kernel32" Alias "VerLanguageNameW" (ByVal wLang As Long, ByVal szLang As LongPtr, ByVal nSize As Long) As Long
     Private Declare PtrSafe Function lstrlen Lib "kernel32" Alias "lstrlenW" (ByVal lpString As LongPtr) As Long
     Private Declare PtrSafe Function lstrcpy Lib "kernel32" Alias "lstrcpyW" (ByVal dst As LongPtr, ByVal src As LongPtr) As Long
@@ -33,21 +33,21 @@ Private Enum LongPtr
 End Enum
 #Const defUnicode = 1
 #If defUnicode Then
-    Private Declare Function GetFileVersionInfoSize Lib "version" Alias "GetFileVersionInfoSizeW" (ByVal lptstrFilename As LongPtr, ByRef lpdwHandle As LongPtr) As Long
-    Private Declare Function GetFileVersionInfo Lib "version" Alias "GetFileVersionInfoW" (ByVal lptstrFilename As LongPtr, ByVal dwHandle As LongPtr, ByVal dwLen As Long, lpData As Any) As Long
-    Private Declare Function VerQueryValue Lib "version" Alias "VerQueryValueW" (pBlock As Any, ByVal lpSubBlock As LongPtr, lplpBuffer As Any, puLen As Long) As Long
+    Private Declare Function GetFileVersionInfoSize Lib "Version" Alias "GetFileVersionInfoSizeW" (ByVal lptstrFilename As LongPtr, ByRef lpdwHandle As LongPtr) As Long
+    Private Declare Function GetFileVersionInfo Lib "Version" Alias "GetFileVersionInfoW" (ByVal lptstrFilename As LongPtr, ByVal dwHandle As LongPtr, ByVal dwLen As Long, lpData As Any) As Long
+    Private Declare Function VerQueryValue Lib "Version" Alias "VerQueryValueW" (pBlock As Any, ByVal lpSubBlock As LongPtr, lplpBuffer As Any, puLen As Long) As Long
     Private Declare Function VerLanguageName Lib "kernel32" Alias "VerLanguageNameW" (ByVal wLang As Long, ByVal szLang As LongPtr, ByVal nSize As Long) As Long
     Private Declare Function lstrlen Lib "kernel32" Alias "lstrlenW" (ByVal lpString As LongPtr) As Long
-    Private Declare Function lstrcpy Lib "kernel32" Alias "lstrcpyW" (ByVal dst As LongPtr, ByVal src As LongPtr) As Long
+    Private Declare Function lstrcpy Lib "kernel32" Alias "lstrcpyW" (ByVal Dst As LongPtr, ByVal src As LongPtr) As Long
 #Else
-    Private Declare Function GetFileVersionInfoSize Lib "version" Alias "GetFileVersionInfoSizeA" (ByVal lptstrFilename As LongPtr, ByRef lpdwHandle As LongPtr) As Long
-    Private Declare Function GetFileVersionInfo Lib "version" Alias "GetFileVersionInfoA" (ByVal lptstrFilename As LongPtr, ByVal dwHandle As Long, ByVal dwLen As Long, lpData As Any) As Long
-    Private Declare Function VerQueryValue Lib "version" Alias "VerQueryValueA" (pBlock As Any, ByVal lpSubBlock As LongPtr, lplpBuffer As Any, puLen As Long) As Long
+    Private Declare Function GetFileVersionInfoSize Lib "Version" Alias "GetFileVersionInfoSizeA" (ByVal lptstrFilename As LongPtr, ByRef lpdwHandle As LongPtr) As Long
+    Private Declare Function GetFileVersionInfo Lib "Version" Alias "GetFileVersionInfoA" (ByVal lptstrFilename As LongPtr, ByVal dwHandle As Long, ByVal dwLen As Long, lpData As Any) As Long
+    Private Declare Function VerQueryValue Lib "Version" Alias "VerQueryValueA" (pBlock As Any, ByVal lpSubBlock As LongPtr, lplpBuffer As Any, puLen As Long) As Long
     Private Declare Function VerLanguageName Lib "kernel32" Alias "VerLanguageNameA" (ByVal wLang As Long, ByVal szLang As LongPtr, ByVal nSize As Long) As Long
     Private Declare Function lstrlen Lib "kernel32" Alias "lstrlenA" (ByVal lpString As LongPtr) As Long
-    Private Declare Function lstrcpy Lib "kernel32" Alias "lstrcpyA" (ByVal dst As LongPtr, ByVal src As LongPtr) As Long
+    Private Declare Function lstrcpy Lib "kernel32" Alias "lstrcpyA" (ByVal Dst As LongPtr, ByVal src As LongPtr) As Long
 #End If
-Private Declare Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal bytLen As Long)
+Private Declare Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal BytLen As Long)
 
 #End If
 
@@ -106,7 +106,7 @@ Private Const VFT2_FONT_TRUETYPE   As Long = &H3&
 Private Const MAX_PATH             As Long = 260
 
 'dw = doubleword = int32 = Long
-'the versions here are only words so drop the "d"
+'the Versions here are only words so drop the "d"
 Private Type VS_FIXEDFILEINFO
     dwSignature        As Long
     wStrucVersionl     As Integer ' minor      'unsigned!
@@ -185,8 +185,8 @@ Function FileVersionInfo(aPathFileName As String) As FileVersionInfo
 End Function
 
 'Private Shared Function ConvertTo8DigitHex(ByVal value As Integer) As String
-Friend Function ConvertTo8DigitHex(ByVal value As Long) As String
-    Dim s As String: s = Hex$(value)
+Friend Function ConvertTo8DigitHex(ByVal Value As Long) As String
+    Dim s As String: s = Hex$(Value)
     ConvertTo8DigitHex = String$(8 - Len(s), "0") & s
 End Function
 
@@ -220,19 +220,19 @@ Friend Function GetFileVersionString(ByVal memPtr As LongPtr, ByVal name As Stri
 End Function
 
 Friend Function GetVersionInfoForCodePage(ByVal memIntPtr As LongPtr, ByVal codepage As String) As Boolean
-  Dim text1 As String: text1 = "\\StringFileInfo\\"
-       mCompanyName = GetFileVersionString(memIntPtr, text1 & codepage & "\\" & "CompanyName")
-   mFileDescription = GetFileVersionString(memIntPtr, text1 & codepage & "\\" & "FileDescription")
-       mFileVersion = GetFileVersionString(memIntPtr, text1 & codepage & "\\" & "FileVersion")
-      mInternalName = GetFileVersionString(memIntPtr, text1 & codepage & "\\" & "InternalName")
-    mLegalCopyright = GetFileVersionString(memIntPtr, text1 & codepage & "\\" & "LegalCopyright")
-  mOriginalFilename = GetFileVersionString(memIntPtr, text1 & codepage & "\\" & "OriginalFilename")
-       mProductName = GetFileVersionString(memIntPtr, text1 & codepage & "\\" & "ProductName")
-    mProductVersion = GetFileVersionString(memIntPtr, text1 & codepage & "\\" & "ProductVersion")
-          mComments = GetFileVersionString(memIntPtr, text1 & codepage & "\\" & "Comments")
-   mLegalTrademarks = GetFileVersionString(memIntPtr, text1 & codepage & "\\" & "LegalTrademarks")
-      mPrivateBuild = GetFileVersionString(memIntPtr, text1 & codepage & "\\" & "PrivateBuild")
-      mSpecialBuild = GetFileVersionString(memIntPtr, text1 & codepage & "\\" & "SpecialBuild")
+  Dim Text1 As String: Text1 = "\\StringFileInfo\\"
+       mCompanyName = GetFileVersionString(memIntPtr, Text1 & codepage & "\\" & "CompanyName")
+   mFileDescription = GetFileVersionString(memIntPtr, Text1 & codepage & "\\" & "FileDescription")
+       mFileVersion = GetFileVersionString(memIntPtr, Text1 & codepage & "\\" & "FileVersion")
+      mInternalName = GetFileVersionString(memIntPtr, Text1 & codepage & "\\" & "InternalName")
+    mLegalCopyright = GetFileVersionString(memIntPtr, Text1 & codepage & "\\" & "LegalCopyright")
+  mOriginalFilename = GetFileVersionString(memIntPtr, Text1 & codepage & "\\" & "OriginalFilename")
+       mProductName = GetFileVersionString(memIntPtr, Text1 & codepage & "\\" & "ProductName")
+    mProductVersion = GetFileVersionString(memIntPtr, Text1 & codepage & "\\" & "ProductVersion")
+          mComments = GetFileVersionString(memIntPtr, Text1 & codepage & "\\" & "Comments")
+   mLegalTrademarks = GetFileVersionString(memIntPtr, Text1 & codepage & "\\" & "LegalTrademarks")
+      mPrivateBuild = GetFileVersionString(memIntPtr, Text1 & codepage & "\\" & "PrivateBuild")
+      mSpecialBuild = GetFileVersionString(memIntPtr, Text1 & codepage & "\\" & "SpecialBuild")
           mLanguage = GetFileVersionLanguage(memIntPtr)
         mVSFileInfo = GetFixedFileInfo(memIntPtr)
 '  mFileMajor = HIWORD(mVSFileInfo.dwFileVersionMS)
@@ -250,9 +250,9 @@ End Function
 
 'Private Shared Function GetFixedFileInfo(ByVal memPtr As IntPtr) As VS_FIXEDFILEINFO
 Friend Function GetFixedFileInfo(ByVal memPtr As LongPtr) As VS_FIXEDFILEINFO
-    Dim num1 As Long, ptr As LongPtr
-    VerQueryValue ByVal memPtr, StrPtr("\"), ptr, num1
-    PtrToStructure ptr, VarPtr(GetFixedFileInfo), LenB(GetFixedFileInfo)
+    Dim num1 As Long, Ptr As LongPtr
+    VerQueryValue ByVal memPtr, StrPtr("\"), Ptr, num1
+    PtrToStructure Ptr, VarPtr(GetFixedFileInfo), LenB(GetFixedFileInfo)
 End Function
 
 '##############################'    Math    '##############################'
@@ -278,9 +278,9 @@ Private Function LOWORD(ByVal n As Long) As Long
 End Function
 
 '##############################'  Marshal   '##############################'
-Private Function ReadInt16(ByVal ptr As LongPtr, Optional ByVal ofs As Long) As Integer
+Private Function ReadInt16(ByVal Ptr As LongPtr, Optional ByVal ofs As Long) As Integer
     '                   pDst             , pSrc
-    RtlMoveMemory ByVal VarPtr(ReadInt16), ByVal (ptr + ofs), 2
+    RtlMoveMemory ByVal VarPtr(ReadInt16), ByVal (Ptr + ofs), 2
 End Function
 Private Function PtrToString(ByVal pStr As LongPtr, Optional ByVal sLen As Long) As String
     If (pStr = 0) Then
@@ -299,10 +299,10 @@ Private Function PtrToString(ByVal pStr As LongPtr, Optional ByVal sLen As Long)
 End Function
 
 'Public Shared Function PtrToStructure(ByVal ptr As System.IntPtr, ByVal structureType As System.Type) As Object
-Private Sub PtrToStructure(ByVal ptr As LongPtr, ByVal pStruct As LongPtr, ByVal LenBStruct As Long)
+Private Sub PtrToStructure(ByVal Ptr As LongPtr, ByVal pStruct As LongPtr, ByVal LenBStruct As Long)
     'hier wird nicht der Pointer übertragen, sondern vielmehr der gesamte Speicherbereich
     'in das Objekt structure hineinkopiert
-    RtlMoveMemory ByVal pStruct, ByVal ptr, LenBStruct
+    RtlMoveMemory ByVal pStruct, ByVal Ptr, LenBStruct
 End Sub
 
 '##############################'   My Properties   '##############################'
@@ -318,7 +318,7 @@ Public Property Get LegalTrademarks() As String:   LegalTrademarks = mLegalTrade
 Public Property Get PrivateBuild() As String:         PrivateBuild = mPrivateBuild:     End Property
 Public Property Get SpecialBuild() As String:         SpecialBuild = mSpecialBuild:     End Property
 
-'##############################'    Fileversion    '##############################'
+'##############################'    FileVersion    '##############################'
 Public Property Get FileVersion() As String:       FileVersion = mFileVersion:                      End Property
 Public Property Get FileMajorPart() As Long:     FileMajorPart = UInt16_ToInt32(mVSFileInfo.wFileVersionMSh): End Property
 Public Property Get FileMinorPart() As Long:     FileMinorPart = UInt16_ToInt32(mVSFileInfo.wFileVersionMSl): End Property
@@ -330,7 +330,7 @@ Public Property Get FileDescription() As String:  FileDescription = mFileDescrip
 Public Property Get ProductName() As String:  ProductName = mProductName: End Property
 '------------------------------------------------------------------
 
-'##############################'  Productversion   '##############################'
+'##############################'  ProductVersion   '##############################'
 Public Property Get ProductVersion() As String:       ProductVersion = mProductVersion:                      End Property
 Public Property Get ProductMajorPart() As Long:     ProductMajorPart = UInt16_ToInt32(mVSFileInfo.wProductVersionMSh): End Property
 Public Property Get ProductMinorPart() As Long:     ProductMinorPart = UInt16_ToInt32(mVSFileInfo.wProductVersionMSl): End Property
